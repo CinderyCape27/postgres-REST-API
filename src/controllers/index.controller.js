@@ -35,16 +35,24 @@ const deleteUser = async (req, res) => {
     const { name, email } = req.body;
     const response =  await pool.query('DELETE FROM users WHERE name = $1', [name])
     console.log(response);
-    
+
 
     res.send('User deleted')
 };
 
 // Función para métodos UPDATE
+const editUser = async (req, res) => {
+    console.log(req.body);
+    
 
+
+    res.send('User updated')
+
+};
 
 module.exports = {
     getUser,
     createUser,
-    deleteUser
+    deleteUser,
+    editUser
 }
