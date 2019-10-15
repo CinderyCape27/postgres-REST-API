@@ -18,6 +18,11 @@ const getUser = async (req, res) => {
    res.status(200).json(response.rows)
 };
 
+const getUserById = async (req, res) => {
+    const id = req.params.id;
+    const response = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    res.json(response.rows);
+};
 
 // Función para métodos POST
 const createUser = async (req, res) => {
@@ -26,33 +31,40 @@ const createUser = async (req, res) => {
     const response = await pool.query(`INSERT INTO users (name, email) VALUES ($1, $2)`, [name, email]);
     console.log(response);
 
-    res.send('User created');
+    res.json({
+        message: 'User added succesfully',
+        body: {
+            user: {name, email}
+        }
+    });
 
 };
 // Función para metodos DELETE
-const deleteUser = async (req, res) => {
-    console.log(req.body);
-    const { name, email } = req.body;
-    const response =  await pool.query('DELETE FROM users WHERE name = $1', [name])
+const deleteUserById = async (req, res) => {
+    const id = req.params.id;
+    const response = await pool.query('DELETE FROM users WHERE id = $1', [id]);
     console.log(response);
-
-
-    res.send('User deleted')
+    res.json(`User ${id} has been deleted`)
 };
 
 // Función para métodos UPDATE
 const editUser = async (req, res) => {
-    console.log(req.body);
-    
-
-
-    res.send('User updated')
+    const id = req.params.id;
+    const { name, email } = req.body;
+    const response = await pool.query('UPDATE users SET name = $1, email = $2 WHERE id = $3', [
+        name,
+        email,
+        id,
+    ]);
+    console.log(response);
+    res.json('User Updated')
 
 };
 
 module.exports = {
     getUser,
     createUser,
-    deleteUser,
-    editUser
+    editUser,
+    getUserById,
+    deleteUserById
 }
